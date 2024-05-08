@@ -8,8 +8,39 @@
     <Grid>
         <Grid.Background>
                 <ImageBrush
-                    ImageSource="C:\Users\Lasse\source\repos\WPF_CLock\BackGround.jpg"></ImageBrush>
+                    ImageSource="/Resources/BackGround.png"></ImageBrush>
         </Grid.Background>
+        <TextBlock Name="CultureTextBlock"
+                   Text=""
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Top"
+                   Margin="10"
+                   Foreground="White"
+                   FontSize="14">
+        </TextBlock>
+        <DockPanel>
+            <Menu DockPanel.Dock="Bottom"
+                  Background="White"
+                  Foreground="Black">
+                <MenuItem 
+                    Header="Format">
+                    <MenuItem 
+                        Header="Toggle date format MM-dd-yyyy / dd-MM-yyyy" Click="changeDateFormat_Click">
+                    </MenuItem>
+                    <MenuItem 
+                        Header="Toggle Month format" Click="changeMonthFormat_Click">
+                    </MenuItem>
+                    <MenuItem 
+                        Header="Toggle 24/12 format" Click="changeTimeFormat_Click">
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem
+                    Header="Language">
+                    <MenuItem 
+                        Header="Switch language / Skift sprog" Click="switchCulture_Click">
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBox Name="DateTextBox" 
                      TextAlignment="Center" 
@@ -36,5 +67,6 @@
                      FontSize="80"
                      IsReadOnly="True"/>
         </StackPanel>
+        </DockPanel>
     </Grid>
 </Window>

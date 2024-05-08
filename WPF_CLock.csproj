@@ -6,12 +6,26 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
-        <ApplicationIcon>Clock_Icon.ico</ApplicationIcon>
+        <ApplicationIcon>Resources\Clock_Icon.ico</ApplicationIcon>
+        <PackageIcon>Clock_Icon.ico</PackageIcon>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <PlatformTarget>x64</PlatformTarget>
+      <DocumentationFile>bin\Release\WPF_CLock.xml</DocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
       <None Remove="Clock_Icon.ico" />
-      <Resource Include="Clock_Icon.ico" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="Resources\Clock_Icon.ico" />
+      <None Remove="Resources\BackGround.jpg" />
+      <None Remove="Resources\Background.png" />
+      <Resource Include="Resources\Background.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
     </ItemGroup>
 
 </Project>

@@ -17,3 +17,4 @@ C:\Users\Lasse\source\repos\WPF_CLock\obj\Debug\net8.0-windows\refint\WPF_CLock.
 C:\Users\Lasse\source\repos\WPF_CLock\obj\Debug\net8.0-windows\WPF_CLock.pdb
 C:\Users\Lasse\source\repos\WPF_CLock\obj\Debug\net8.0-windows\WPF_CLock.genruntimeconfig.cache
 C:\Users\Lasse\source\repos\WPF_CLock\obj\Debug\net8.0-windows\ref\WPF_CLock.dll
+C:\Users\Lasse\source\repos\WPF_CLock\obj\Debug\net8.0-windows\WPF_CLock.sourcelink.json
