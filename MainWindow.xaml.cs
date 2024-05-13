@@ -7,15 +7,15 @@ namespace WPF_CLock;
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow : Window
+public partial class MainWindow
 {
     private bool _is24Hour = true;
     private bool _isEuropeanDateFormat = true;
-    private bool _isMonthSpelledOut = false;
+    private bool _isMonthSpelledOut;
     private string _dateFormat = "dd-MM-yyyy";
     private string _timeFormat = "HH:mm:ss";
     private string _amOrPm = String.Empty;
-    CultureInfo _currentCulture = new CultureInfo("en-US");
+    CultureInfo _currentCulture = new CultureInfo("da-DA");
     
     public MainWindow()
     {
@@ -52,12 +52,12 @@ public partial class MainWindow : Window
     {
         if(_is24Hour)
         {
-            // In 24 hour format, there is no AM or PM. So return empty string.
+            // In 24-hour format, there is no AM or PM. So return empty string.
             return string.Empty;
         }
         else
         {
-            // When in 12 hour format, decide AM or PM based on current time.
+            // When in 12-hour format, decide AM or PM based on current time.
             return DateTime.Now.Hour >= 12 ? "PM" : "AM";
         }
     }
