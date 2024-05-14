@@ -1,6 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Threading;
 using System.Globalization;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Newtonsoft.Json;
 
 namespace WPF_CLock;
 
@@ -9,13 +12,14 @@ namespace WPF_CLock;
 /// </summary>
 public partial class MainWindow
 {
+    private static readonly HttpClient Client = new HttpClient();
     private bool _is24Hour = true;
     private bool _isEuropeanDateFormat = true;
     private bool _isMonthSpelledOut;
     private string _dateFormat = "dd-MM-yyyy";
     private string _timeFormat = "HH:mm:ss";
     private string _amOrPm = String.Empty;
-    CultureInfo _currentCulture = new CultureInfo("da-DA");
+    CultureInfo _currentCulture = new CultureInfo("da-DK");
     
     public MainWindow()
     {
@@ -32,6 +36,17 @@ public partial class MainWindow
             CultureTextBlock.Text = _currentCulture.Name;
         };
         timer.Start();
+
+        // Make an initial call to the API
+        UpdateWeather();
+
+        DispatcherTimer apiTimer = new DispatcherTimer();
+        apiTimer.Interval = TimeSpan.FromHours(1);
+        apiTimer.Tick += async (s, a) =>
+        {
+            await UpdateWeather();
+        };
+        apiTimer.Start();
     }
 
     private string ToggleEuropeanDateFormat()
@@ -92,6 +107,53 @@ public partial class MainWindow
         else
         {
             _currentCulture = new CultureInfo("en-US");
+        }
+    }
+
+    private async Task UpdateWeather()
+    {
+        Root? root = await MakeRequest();
+        if (root != null)
+        {
+            WeatherTextBox.Text = root.features[0].properties.value.ToString() + "°C";
+        }
+    }
+    
+    private static async Task<Root?> MakeRequest()
+    {
+        // Set request headers
+        Client.DefaultRequestHeaders.Accept.Clear();
+        Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/geo+json"));
+        Client.DefaultRequestHeaders.Add("X-Gravitee-Api-Key", "8e67acbe-1cb2-48de-98d3-c6055fb527ef");
+
+        // Specify the request URL
+        string url = "https://dmigw.govcloud.dk/v2/metObs/collections/observation/items?period=latest-day&stationId=06030&parameterId=temp_mean_past1h&limit=24&offset=1&sortorder=observed%2CDESC&bbox-crs=https%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FOGC%2F1.3%2FCRS84&api-key=8e67acbe-1cb2-48de-98d3-c6055fb527ef";
+        
+        try
+        {
+            // Send a GET request to the specified Uri and get the response
+            HttpResponseMessage response = await Client.GetAsync(url);
+
+            // Check that the response was successful
+            if (response.IsSuccessStatusCode)
+            {
+                // Parse the response body. Blocking!
+                string responseBody = await response.Content.ReadAsStringAsync();
+                // Deserialize the JSON response to the Root object
+                Root? root = JsonConvert.DeserializeObject<Root>(responseBody);
+                // You can use the root object now
+                return root;
+            }
+            else
+            {
+                return null;
+                // Log or handle the error situation
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            return null;
+            // Handle any errors that occurred and provide more information
         }
     }
 }

@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Clock" Height="350" Width="600">
+        Title="Clock" Height="500" Width="600">
     <Grid>
         <Grid.Background>
                 <ImageBrush
@@ -65,6 +65,14 @@
                      BorderBrush="Black"
                      BorderThickness="0"
                      FontSize="80"
+                     IsReadOnly="True"/>
+            <TextBox Name="WeatherTextBox" 
+                     TextAlignment="Center" 
+                     Foreground="White" 
+                     Background="Transparent"
+                     BorderBrush="Black"
+                     BorderThickness="0"
+                     FontSize="50"
                      IsReadOnly="True"/>
         </StackPanel>
         </DockPanel>

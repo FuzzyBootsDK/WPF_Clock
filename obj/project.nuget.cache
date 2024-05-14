@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "mzM97PveRj3OsfbUxGNoCyE6TnJ/ngjMv/nVBTTvBfWjBpZ7zFl9FYEFInfbIu0kPTlg8jY+VV8n6rdEOpxVug==",
+  "dgSpecHash": "1DkupQ4gRWdaKGrmgJbilMbJSfdysULE3deBueQoKUs+ZK10N0Un5FAPIcGwQweK0BhqtCfauH2H5Cu1QWkY1A==",
   "success": true,
   "projectFilePath": "C:\\Users\\Lasse\\source\\repos\\WPF_CLock\\WPF_CLock.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Lasse\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
   "logs": []
 }
