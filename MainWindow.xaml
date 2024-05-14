@@ -68,11 +68,12 @@
                      IsReadOnly="True"/>
             <TextBox Name="WeatherTextBox" 
                      TextAlignment="Center" 
-                     Foreground="White" 
+                     Foreground="Gray" 
                      Background="Transparent"
                      BorderBrush="Black"
                      BorderThickness="0"
-                     FontSize="50"
+                     Margin="0,0,0,0"
+                     FontSize="25"
                      IsReadOnly="True"/>
         </StackPanel>
         </DockPanel>

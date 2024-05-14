@@ -13,6 +13,13 @@ namespace WPF_CLock;
 public partial class MainWindow
 {
     private static readonly HttpClient Client = new HttpClient();
+    private static readonly string BaseUrl = "https://dmigw.govcloud.dk/v2/metObs/collections/observation/items";
+    // private static string LocationUrl = "https://dmigw.govcloud.dk/v2/metObs/collections/station/items/";
+    private static readonly string ApiKey = "8e67acbe-1cb2-48de-98d3-c6055fb527ef";
+    private string _windDirection = "?period=latest-day&stationId=06030&parameterId=wind_dir&limit=1&sortorder=observed%2CDESC&bbox-crs=https%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FOGC%2F1.3%2FCRS84&api-key=";
+    private string _windSpeed = "?period=latest-day&stationId=06030&parameterId=wind_speed_past1h&limit=1&sortorder=observed%2CDESC&bbox-crs=https%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FOGC%2F1.3%2FCRS84&api-key=";
+    private string _humidity = "?period=latest-day&stationId=06030&parameterId=humidity&limit=1&sortorder=observed%2CDESC&bbox-crs=https%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FOGC%2F1.3%2FCRS84&api-key=";
+    private string _temperature = "?period=latest-day&stationId=06030&parameterId=temp_mean_past1h&limit=1&sortorder=observed%2CDESC&bbox-crs=https%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FOGC%2F1.3%2FCRS84&api-key=";
     private bool _is24Hour = true;
     private bool _isEuropeanDateFormat = true;
     private bool _isMonthSpelledOut;
@@ -24,6 +31,9 @@ public partial class MainWindow
     public MainWindow()
     {
         InitializeComponent();
+        // Make an initial call to the API
+        UpdateWeather();
+        
         DispatcherTimer timer = new DispatcherTimer();
         timer.Interval = TimeSpan.FromSeconds(1);
         timer.Tick += (s, a) => 
@@ -36,9 +46,6 @@ public partial class MainWindow
             CultureTextBlock.Text = _currentCulture.Name;
         };
         timer.Start();
-
-        // Make an initial call to the API
-        UpdateWeather();
 
         DispatcherTimer apiTimer = new DispatcherTimer();
         apiTimer.Interval = TimeSpan.FromHours(1);
@@ -109,51 +116,74 @@ public partial class MainWindow
             _currentCulture = new CultureInfo("en-US");
         }
     }
-
+    
     private async Task UpdateWeather()
     {
-        Root? root = await MakeRequest();
-        if (root != null)
-        {
-            WeatherTextBox.Text = root.features[0].properties.value.ToString() + "°C";
-        }
+        var tempRoot = await MakeRequest(_temperature);
+        await Task.Delay(60000);
+        
+        var windDirectionRoot = await MakeRequest(_windDirection);
+        await Task.Delay(60000);
+        
+        var windSpeedRoot = await MakeRequest(_windSpeed);
+        await Task.Delay(60000);
+        
+        var humidityRoot = await MakeRequest(_humidity);
+        
+        string temp = tempRoot != null ? tempRoot.Features[0].Properties.Value.ToString() + "°C" : "N/A";
+        string windDirection = windDirectionRoot != null ? DegreeToCardinalDirection(windDirectionRoot.Features[0].Properties.Value) : "N/A";
+        string windSpeed = windSpeedRoot != null ? windSpeedRoot.Features[0].Properties.Value.ToString() + " m/s" : "N/A";
+        string humidity = humidityRoot != null ? humidityRoot.Features[0].Properties.Value.ToString() + "%" : "N/A";
+
+        string totalWeather = $"Temperature: {temp} Humidity: {humidity}\n Wind Direction: {windDirection} Wind Speed: {windSpeed}";
+
+        WeatherTextBox.Text = totalWeather;
+        // if (tempRoot != null && windDirectionRoot != null && humidityRoot != null)
+        // {
+        //     WeatherTextBox.Text = totalWeather;
+        // }
     }
     
-    private static async Task<Root?> MakeRequest()
+    private static string ConstructUrl(string parameterId)
+    {
+        return $"{BaseUrl}{parameterId}{ApiKey}";
+    }
+    
+    private static async Task<FeatureCollection?> MakeRequest(string parameterId)
     {
         // Set request headers
         Client.DefaultRequestHeaders.Accept.Clear();
         Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/geo+json"));
-        Client.DefaultRequestHeaders.Add("X-Gravitee-Api-Key", "8e67acbe-1cb2-48de-98d3-c6055fb527ef");
+        Client.DefaultRequestHeaders.Add("X-Gravitee-Api-Key", ApiKey);
 
-        // Specify the request URL
-        string url = "https://dmigw.govcloud.dk/v2/metObs/collections/observation/items?period=latest-day&stationId=06030&parameterId=temp_mean_past1h&limit=24&offset=1&sortorder=observed%2CDESC&bbox-crs=https%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FOGC%2F1.3%2FCRS84&api-key=8e67acbe-1cb2-48de-98d3-c6055fb527ef";
-        
+        // Construct the URL
+        string url = ConstructUrl(parameterId);
+
         try
         {
-            // Send a GET request to the specified Uri and get the response
             HttpResponseMessage response = await Client.GetAsync(url);
 
-            // Check that the response was successful
             if (response.IsSuccessStatusCode)
             {
-                // Parse the response body. Blocking!
                 string responseBody = await response.Content.ReadAsStringAsync();
-                // Deserialize the JSON response to the Root object
-                Root? root = JsonConvert.DeserializeObject<Root>(responseBody);
-                // You can use the root object now
+                FeatureCollection? root = JsonConvert.DeserializeObject<FeatureCollection>(responseBody);
                 return root;
             }
             else
             {
                 return null;
-                // Log or handle the error situation
             }
         }
         catch (HttpRequestException e)
         {
-            return null;
-            // Handle any errors that occurred and provide more information
+            return null; // Optionally, you could log the exception here.
         }
+    }
+    
+    public string DegreeToCardinalDirection(double degree)
+    {
+        string[] cardinalDirections = { "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N" };
+        int index = (int)Math.Round(((degree % 360) / 45));
+        return cardinalDirections[index];
     }
 }
