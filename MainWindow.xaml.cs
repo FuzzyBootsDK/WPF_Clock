@@ -1,4 +1,4 @@
-﻿using System.Windows;
+﻿﻿using System.Windows;
 using System.Windows.Threading;
 using System.Globalization;
 using System.Net.Http;
@@ -12,7 +12,7 @@ namespace WPF_CLock;
 /// </summary>
 public partial class MainWindow
 {
-    private static readonly HttpClient Client = new HttpClient();
+    
     private static readonly string BaseUrl = "https://dmigw.govcloud.dk/v2/metObs/collections/observation/items";
     // private static string LocationUrl = "https://dmigw.govcloud.dk/v2/metObs/collections/station/items/";
     private static readonly string ApiKey = "8e67acbe-1cb2-48de-98d3-c6055fb527ef";
@@ -48,7 +48,7 @@ public partial class MainWindow
         timer.Start();
 
         DispatcherTimer apiTimer = new DispatcherTimer();
-        apiTimer.Interval = TimeSpan.FromHours(1);
+        apiTimer.Interval = TimeSpan.FromMinutes(10);
         apiTimer.Tick += async (s, a) =>
         {
             await UpdateWeather();
@@ -120,13 +120,13 @@ public partial class MainWindow
     private async Task UpdateWeather()
     {
         var tempRoot = await MakeRequest(_temperature);
-        await Task.Delay(60000);
+        await Task.Delay(5000);
         
         var windDirectionRoot = await MakeRequest(_windDirection);
-        await Task.Delay(60000);
+        await Task.Delay(5000);
         
         var windSpeedRoot = await MakeRequest(_windSpeed);
-        await Task.Delay(60000);
+        await Task.Delay(5000);
         
         var humidityRoot = await MakeRequest(_humidity);
         
@@ -135,7 +135,7 @@ public partial class MainWindow
         string windSpeed = windSpeedRoot != null ? windSpeedRoot.Features[0].Properties.Value.ToString() + " m/s" : "N/A";
         string humidity = humidityRoot != null ? humidityRoot.Features[0].Properties.Value.ToString() + "%" : "N/A";
 
-        string totalWeather = $"Temperature: {temp} Humidity: {humidity}\n Wind Direction: {windDirection} Wind Speed: {windSpeed}";
+        string totalWeather = $"Temperature: {temp}, Humidity: {humidity}\n Wind Direction: {windDirection}, Wind Speed: {windSpeed}";
 
         WeatherTextBox.Text = totalWeather;
         // if (tempRoot != null && windDirectionRoot != null && humidityRoot != null)
@@ -151,6 +151,7 @@ public partial class MainWindow
     
     private static async Task<FeatureCollection?> MakeRequest(string parameterId)
     {
+        HttpClient Client = new HttpClient();
         // Set request headers
         Client.DefaultRequestHeaders.Accept.Clear();
         Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/geo+json"));

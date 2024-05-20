@@ -20,11 +20,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Resource Include="Resources\Clock_Icon.ico" />
+      <Resource Include="Resources\Clock_Icon.ico">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Resource>
       <None Remove="Resources\BackGround.jpg" />
       <None Remove="Resources\Background.png" />
       <Resource Include="Resources\Background.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Resource>
     </ItemGroup>
 
