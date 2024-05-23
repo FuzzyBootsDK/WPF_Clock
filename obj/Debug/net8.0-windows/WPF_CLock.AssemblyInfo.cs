@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WPF_CLock")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3422b99479f678e2044eb755bdc5df3e08d6b66d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+613defd9c105c7ff92e0bd19dfd5eb3228472ae5")]
 [assembly: System.Reflection.AssemblyProductAttribute("WPF_CLock")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WPF_CLock")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

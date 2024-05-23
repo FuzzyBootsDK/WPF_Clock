@@ -14,12 +14,11 @@ public partial class MainWindow
 {
     
     private static readonly string BaseUrl = "https://dmigw.govcloud.dk/v2/metObs/collections/observation/items";
-    // private static string LocationUrl = "https://dmigw.govcloud.dk/v2/metObs/collections/station/items/";
     private static readonly string ApiKey = "8e67acbe-1cb2-48de-98d3-c6055fb527ef";
-    private string _windDirection = "?period=latest-day&stationId=06030&parameterId=wind_dir&limit=1&sortorder=observed%2CDESC&bbox-crs=https%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FOGC%2F1.3%2FCRS84&api-key=";
-    private string _windSpeed = "?period=latest-day&stationId=06030&parameterId=wind_speed_past1h&limit=1&sortorder=observed%2CDESC&bbox-crs=https%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FOGC%2F1.3%2FCRS84&api-key=";
-    private string _humidity = "?period=latest-day&stationId=06030&parameterId=humidity&limit=1&sortorder=observed%2CDESC&bbox-crs=https%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FOGC%2F1.3%2FCRS84&api-key=";
-    private string _temperature = "?period=latest-day&stationId=06030&parameterId=temp_mean_past1h&limit=1&sortorder=observed%2CDESC&bbox-crs=https%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FOGC%2F1.3%2FCRS84&api-key=";
+    private string _windDirection = "wind_dir";
+    private string _windSpeed = "wind_speed_past1h";
+    private string _humidity = "humidity";
+    private string _temperature = "temp_mean_past1h";
     private bool _is24Hour = true;
     private bool _isEuropeanDateFormat = true;
     private bool _isMonthSpelledOut;
@@ -32,7 +31,6 @@ public partial class MainWindow
     {
         InitializeComponent();
         // Make an initial call to the API
-        UpdateWeather();
         
         DispatcherTimer timer = new DispatcherTimer();
         timer.Interval = TimeSpan.FromSeconds(1);
@@ -47,6 +45,9 @@ public partial class MainWindow
         };
         timer.Start();
 
+        UpdateWeather();
+        Task.Delay(30000);
+        
         DispatcherTimer apiTimer = new DispatcherTimer();
         apiTimer.Interval = TimeSpan.FromMinutes(10);
         apiTimer.Tick += async (s, a) =>
@@ -146,41 +147,45 @@ public partial class MainWindow
     
     private static string ConstructUrl(string parameterId)
     {
-        return $"{BaseUrl}{parameterId}{ApiKey}";
+        string callUrl =
+            $"?period=latest-day&stationId=06030&parameterId={parameterId}&limit=1&sortorder=observed%2CDESC&bbox-crs=https%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FOGC%2F1.3%2FCRS84&api-key=";
+        return $"{BaseUrl}{callUrl}{ApiKey}";
     }
-    
+
     private static async Task<FeatureCollection?> MakeRequest(string parameterId)
     {
-        HttpClient Client = new HttpClient();
-        // Set request headers
-        Client.DefaultRequestHeaders.Accept.Clear();
-        Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/geo+json"));
-        Client.DefaultRequestHeaders.Add("X-Gravitee-Api-Key", ApiKey);
-
-        // Construct the URL
-        string url = ConstructUrl(parameterId);
-
-        try
+        using (HttpClient client = new HttpClient())
         {
-            HttpResponseMessage response = await Client.GetAsync(url);
+            // Set request headers
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/geo+json"));
+            client.DefaultRequestHeaders.Add("X-Gravitee-Api-Key", ApiKey);
 
-            if (response.IsSuccessStatusCode)
+            // Construct the URL
+            string url = ConstructUrl(parameterId);
+
+            try
             {
-                string responseBody = await response.Content.ReadAsStringAsync();
-                FeatureCollection? root = JsonConvert.DeserializeObject<FeatureCollection>(responseBody);
-                return root;
+                HttpResponseMessage response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    FeatureCollection? root = JsonConvert.DeserializeObject<FeatureCollection>(responseBody);
+                    return root;
+                }
+                else
+                {
+                    return null;
+                }
             }
-            else
+            catch (HttpRequestException e)
             {
-                return null;
+                return null; // Optionally, you could log the exception here.
             }
-        }
-        catch (HttpRequestException e)
-        {
-            return null; // Optionally, you could log the exception here.
         }
     }
-    
+
     public string DegreeToCardinalDirection(double degree)
     {
         string[] cardinalDirections = { "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N" };
