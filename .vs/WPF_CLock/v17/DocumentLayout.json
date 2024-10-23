@@ -3,20 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\lassor\\source\\repos\\WPF_Clock\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8622994B-9CED-469E-BF69-9C2A38EC643D}|WPF_CLock.csproj|c:\\users\\lassor\\source\\repos\\wpf_clock\\weatherdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8622994B-9CED-469E-BF69-9C2A38EC643D}|WPF_CLock.csproj|solutionrelative:weatherdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{8622994B-9CED-469E-BF69-9C2A38EC643D}|WPF_CLock.csproj|c:\\users\\lassor\\source\\repos\\wpf_clock\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8622994B-9CED-469E-BF69-9C2A38EC643D}|WPF_CLock.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8622994B-9CED-469E-BF69-9C2A38EC643D}|WPF_CLock.csproj|c:\\users\\lassor\\source\\repos\\wpf_clock\\location.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8622994B-9CED-469E-BF69-9C2A38EC643D}|WPF_CLock.csproj|solutionrelative:location.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{8622994B-9CED-469E-BF69-9C2A38EC643D}|WPF_CLock.csproj|c:\\users\\lassor\\source\\repos\\wpf_clock\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{8622994B-9CED-469E-BF69-9C2A38EC643D}|WPF_CLock.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8622994B-9CED-469E-BF69-9C2A38EC643D}|WPF_CLock.csproj|c:\\users\\lassor\\source\\repos\\wpf_clock\\.env||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{8622994B-9CED-469E-BF69-9C2A38EC643D}|WPF_CLock.csproj|solutionrelative:.env||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8622994B-9CED-469E-BF69-9C2A38EC643D}|WPF_CLock.csproj|c:\\users\\lassor\\source\\repos\\wpf_clock\\weatherdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8622994B-9CED-469E-BF69-9C2A38EC643D}|WPF_CLock.csproj|solutionrelative:weatherdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8622994B-9CED-469E-BF69-9C2A38EC643D}|WPF_CLock.csproj|c:\\users\\lassor\\source\\repos\\wpf_clock\\location.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8622994B-9CED-469E-BF69-9C2A38EC643D}|WPF_CLock.csproj|solutionrelative:location.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 222,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -46,20 +50,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
+              "Title": ".env",
+              "DocumentMoniker": "C:\\Users\\lassor\\source\\repos\\WPF_Clock\\.env",
+              "RelativeDocumentMoniker": ".env",
+              "ToolTip": "C:\\Users\\lassor\\source\\repos\\WPF_Clock\\.env",
+              "RelativeToolTip": ".env",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-10-23T11:00:27.659Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "C:\\Users\\lassor\\source\\repos\\WPF_Clock\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
               "ToolTip": "C:\\Users\\lassor\\source\\repos\\WPF_Clock\\MainWindow.xaml.cs",
               "RelativeToolTip": "MainWindow.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAsAAAAAAAAAA==",
+              "ViewState": "AgIAACYBAAAAAAAAAAAiwEEBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-23T05:25:13.215Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "C:\\Users\\lassor\\source\\repos\\WPF_Clock\\MainWindow.xaml",
               "RelativeDocumentMoniker": "MainWindow.xaml",
@@ -71,26 +88,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "WeatherDbContext.cs",
               "DocumentMoniker": "C:\\Users\\lassor\\source\\repos\\WPF_Clock\\WeatherDbContext.cs",
               "RelativeDocumentMoniker": "WeatherDbContext.cs",
               "ToolTip": "C:\\Users\\lassor\\source\\repos\\WPF_Clock\\WeatherDbContext.cs",
               "RelativeToolTip": "WeatherDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-23T06:01:03.94Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "Location.cs",
               "DocumentMoniker": "C:\\Users\\lassor\\source\\repos\\WPF_Clock\\Location.cs",
               "RelativeDocumentMoniker": "Location.cs",
               "ToolTip": "C:\\Users\\lassor\\source\\repos\\WPF_Clock\\Location.cs",
               "RelativeToolTip": "Location.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAbAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-23T05:44:41.451Z",
               "EditorCaption": ""

@@ -16,15 +16,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove=".env" />
       <None Remove="Clock_Icon.ico" />
-      <None Remove="Stations.db" />
     </ItemGroup>
 
     <ItemGroup>
-      <Resource Include=".env">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Resource>
       <Resource Include="Resources\Clock_Icon.ico">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Resource>
@@ -33,15 +28,21 @@
       <Resource Include="Resources\Background.png">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Resource>
-      <Resource Include="Stations.db">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Resource>
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="DotNetEnv" Version="3.1.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update=".env">
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      </None>
+      <None Update="Stations.db">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

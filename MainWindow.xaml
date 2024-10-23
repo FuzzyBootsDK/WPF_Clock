@@ -73,6 +73,9 @@
                 <MenuItem Header="Language">
                     <MenuItem Header="Switch language / Skift sprog" Click="switchCulture_Click"/>
                 </MenuItem>
+                <MenuItem Header="Settings" HorizontalAlignment="Right">
+                    <MenuItem Header="API Key" Click="ApiKeyMenuItem_Click"/>
+                </MenuItem>
             </Menu>
             <Grid>
                 <Grid.RowDefinitions>

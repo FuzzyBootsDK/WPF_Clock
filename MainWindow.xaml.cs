@@ -8,7 +8,8 @@ using Newtonsoft.Json;
 using System.Windows.Controls;
 using System.Linq; // Ensure this is included for LINQ operations
 using System.Diagnostics; // For debugging
-using System.Collections.Generic; // For List
+using System.Collections.Generic;
+using System.Windows.Media; // For List
 
 namespace WPF_CLock;
 
@@ -18,7 +19,7 @@ namespace WPF_CLock;
 public partial class MainWindow
 {
     private static readonly string BaseUrl = "https://dmigw.govcloud.dk/v2/metObs/collections/observation/items";
-    private static readonly string ApiKey; //"8e67acbe-1cb2-48de-98d3-c6055fb527ef";
+    private static string ApiKey; //"8e67acbe-1cb2-48de-98d3-c6055fb527ef";
     private string _locationId = "06030";
     private string _locationName = "Flyvestation Ålborg";
     private string _windDirection = "wind_dir";
@@ -44,6 +45,7 @@ public partial class MainWindow
     public MainWindow()
     {
         InitializeComponent();
+        InitializeApiKey();
         // Make an initial call to the API
         NameTextBlock.Text = _locationName;
 
@@ -169,6 +171,7 @@ public partial class MainWindow
         WeatherTextBox.Text = totalWeather;
         // Update the LastApiCallTextBlock with the current time
         LastApiCallTextBlock.Text = "Updated: " + DateTime.Now.ToString("HH:mm:ss");
+        Debug.WriteLine(ApiKey);
         // if (tempRoot != null && windDirectionRoot != null && humidityRoot != null)
         // {
         //     WeatherTextBox.Text = totalWeather;
@@ -280,5 +283,77 @@ public partial class MainWindow
             // Call UpdateWeather() to fetch new weather data for the selected location
             await UpdateWeather();
         }
+    }
+
+    private void ApiKeyMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new ApiKeyDialog();
+        if (dialog.ShowDialog() == true)
+        {
+            string apiKey = dialog.ApiKey;
+            SaveApiKey(apiKey);
+        }
+    }
+
+    private static void UpdateApiKey(string apiKey)
+    {
+        // Use reflection to set the readonly field
+        typeof(MainWindow).GetField("ApiKey", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic).SetValue(null, apiKey);
+    }
+
+    private void SaveApiKey(string apiKey)
+    {
+        string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        string envFilePath = System.IO.Path.Combine(appDirectory, ".env");
+
+        // Load existing .env file
+        var envLines = System.IO.File.Exists(envFilePath) ? System.IO.File.ReadAllLines(envFilePath).ToList() : new List<string>();
+
+        // Update or add the APIKEY entry
+        bool apiKeyFound = false;
+        for (int i = 0; i < envLines.Count; i++)
+        {
+            if (envLines[i].StartsWith("APIKEY="))
+            {
+                envLines[i] = $"APIKEY=\"{apiKey}\"";
+                apiKeyFound = true;
+                break;
+            }
+        }
+
+        if (!apiKeyFound)
+        {
+            envLines.Add($"APIKEY=\"{apiKey}\"");
+        }
+
+        // Save the updated .env file
+        System.IO.File.WriteAllLines(envFilePath, envLines);
+
+        // Update the static ApiKey field
+        UpdateApiKey(apiKey);
+
+        // Re-initialize the API key to update the UI
+        InitializeApiKey();
+    }
+
+    private void InitializeApiKey()
+    {
+        string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        string envFilePath = System.IO.Path.Combine(appDirectory, ".env");
+        Env.Load(envFilePath);
+        ApiKey = Env.GetString("APIKEY");
+
+        Dispatcher.Invoke(() =>
+        {
+            if (string.IsNullOrEmpty(ApiKey))
+            {
+                _locationName = "API Key Missing";
+                NameTextBlock.Foreground = new SolidColorBrush(Colors.Red);
+            }
+            else
+            {
+                NameTextBlock.Foreground = new SolidColorBrush(Colors.White);
+            }
+        });
     }
 }

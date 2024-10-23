@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 C:\Users\lassor\source\repos\WPF_Clock\App.xaml
-11407045341
+21968266454
 
-7-2040987240
+81018754406
 220-752615905
-MainWindow.xaml;
+ApiKeyDialog.xaml;MainWindow.xaml;
 
 False
 

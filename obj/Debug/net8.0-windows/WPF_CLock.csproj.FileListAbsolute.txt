@@ -85,3 +85,6 @@ C:\Users\lassor\Source\Repos\WPF_Clock\obj\Debug\net8.0-windows\refint\WPF_CLock
 C:\Users\lassor\Source\Repos\WPF_Clock\obj\Debug\net8.0-windows\WPF_CLock.pdb
 C:\Users\lassor\Source\Repos\WPF_Clock\obj\Debug\net8.0-windows\WPF_CLock.genruntimeconfig.cache
 C:\Users\lassor\Source\Repos\WPF_Clock\obj\Debug\net8.0-windows\ref\WPF_CLock.dll
+C:\Users\lassor\source\repos\WPF_Clock\bin\Debug\net8.0-windows\Stations.db
+C:\Users\lassor\source\repos\WPF_Clock\obj\Debug\net8.0-windows\ApiKeyDialog.baml
+C:\Users\lassor\source\repos\WPF_Clock\obj\Debug\net8.0-windows\ApiKeyDialog.g.cs
