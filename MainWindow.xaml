@@ -7,8 +7,7 @@
         Title="Clock" Height="500" Width="600">
     <Grid>
         <Grid.Background>
-                <ImageBrush
-                    ImageSource="/Resources/BackGround.png"></ImageBrush>
+            <ImageBrush ImageSource="/Resources/BackGround.png"></ImageBrush>
         </Grid.Background>
         <TextBlock Name="CultureTextBlock"
                    Text=""
@@ -18,64 +17,110 @@
                    Foreground="White"
                    FontSize="14">
         </TextBlock>
+        <TextBlock Name="LastApiCallTextBlock"
+                   Text=""
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Margin="10"
+                   Foreground="Gray"
+                   FontSize="10">
+        </TextBlock>
         <DockPanel>
             <Menu DockPanel.Dock="Bottom"
                   Background="White"
                   Foreground="Black">
-                <MenuItem 
-                    Header="Format">
-                    <MenuItem 
-                        Header="Toggle date format MM-dd-yyyy / dd-MM-yyyy" Click="changeDateFormat_Click">
-                    </MenuItem>
-                    <MenuItem 
-                        Header="Toggle Month format" Click="changeMonthFormat_Click">
-                    </MenuItem>
-                    <MenuItem 
-                        Header="Toggle 24/12 format" Click="changeTimeFormat_Click">
-                    </MenuItem>
+                <MenuItem x:Name="LocationMenuItem" Header="Locations" SubmenuOpened="LocationMenuItem_SubmenuOpened">
+                    <MenuItem.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </MenuItem.ItemsPanel>
+                    <MenuItem.Template>
+                        <ControlTemplate TargetType="MenuItem">
+                            <Grid>
+                                <Popup Name="PART_Popup" 
+                                       Placement="Bottom" 
+                                       IsOpen="{TemplateBinding IsSubmenuOpen}" 
+                                       AllowsTransparency="True" 
+                                       Focusable="False" 
+                                       PopupAnimation="Fade">
+                                    <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
+                                        <Border Name="SubmenuBorder" 
+                                                SnapsToDevicePixels="True" 
+                                                Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" 
+                                                BorderBrush="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}" 
+                                                BorderThickness="1">
+                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                                        </Border>
+                                    </ScrollViewer>
+                                </Popup>
+                                <ContentPresenter ContentSource="Header" 
+                                                  RecognizesAccessKey="True" 
+                                                  ContentTemplate="{TemplateBinding HeaderTemplate}" 
+                                                  ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}" 
+                                                  ContentStringFormat="{TemplateBinding HeaderStringFormat}" 
+                                                  Margin="6,1,6,1"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </MenuItem.Template>
                 </MenuItem>
-                <MenuItem
-                    Header="Language">
-                    <MenuItem 
-                        Header="Switch language / Skift sprog" Click="switchCulture_Click">
-                    </MenuItem>
+
+                <MenuItem Header="Format">
+                    <MenuItem Header="Toggle date format MM-dd-yyyy / dd-MM-yyyy" Click="changeDateFormat_Click"/>
+                    <MenuItem Header="Toggle Month format" Click="changeMonthFormat_Click"/>
+                    <MenuItem Header="Toggle 24/12 format" Click="changeTimeFormat_Click"/>
+                </MenuItem>
+                <MenuItem Header="Language">
+                    <MenuItem Header="Switch language / Skift sprog" Click="switchCulture_Click"/>
                 </MenuItem>
             </Menu>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBox Name="DateTextBox" 
-                     TextAlignment="Center" 
-                     Foreground="White" 
-                     Background="Transparent"
-                     BorderBrush="Black"
-                     BorderThickness="0"
-                     FontSize="60"
-                     IsReadOnly="True"/>
-            <TextBox Name="DayTextBox" 
-                     TextAlignment="Center" 
-                     Foreground="Gray" 
-                     Background="Transparent"
-                     BorderBrush="Black"
-                     BorderThickness="0"
-                     FontSize="50"
-                     IsReadOnly="True"/>
-            <TextBox Name="TimeTextBox" 
-                     TextAlignment="Center" 
-                     Foreground="White" 
-                     Background="Transparent"
-                     BorderBrush="Black"
-                     BorderThickness="0"
-                     FontSize="80"
-                     IsReadOnly="True"/>
-            <TextBox Name="WeatherTextBox" 
-                     TextAlignment="Center" 
-                     Foreground="Gray" 
-                     Background="Transparent"
-                     BorderBrush="Black"
-                     BorderThickness="0"
-                     Margin="0,0,0,0"
-                     FontSize="25"
-                     IsReadOnly="True"/>
-        </StackPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBox Name="DateTextBox" 
+                             TextAlignment="Center" 
+                             Foreground="White" 
+                             Background="Transparent"
+                             BorderBrush="Black"
+                             BorderThickness="0"
+                             FontSize="60"
+                             IsReadOnly="True"/>
+                    <TextBox Name="DayTextBox" 
+                             TextAlignment="Center" 
+                             Foreground="Gray" 
+                             Background="Transparent"
+                             BorderBrush="Black"
+                             BorderThickness="0"
+                             FontSize="50"
+                             IsReadOnly="True"/>
+                    <TextBox Name="TimeTextBox" 
+                             TextAlignment="Center" 
+                             Foreground="White" 
+                             Background="Transparent"
+                             BorderBrush="Black"
+                             BorderThickness="0"
+                             FontSize="80"
+                             IsReadOnly="True"/>
+                    <TextBox Name="WeatherTextBox" 
+                             TextAlignment="Center" 
+                             Foreground="Gray" 
+                             Background="Transparent"
+                             BorderBrush="Black"
+                             BorderThickness="0"
+                             Margin="0,0,0,0"
+                             FontSize="25"
+                             IsReadOnly="True"/>
+                </StackPanel>
+                <TextBlock Grid.Row="1" Name="NameTextBlock"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Bottom"
+                           Margin="10"
+                           Foreground="LightGray"
+                           FontSize="10"/>
+            </Grid>
         </DockPanel>
     </Grid>
 </Window>
