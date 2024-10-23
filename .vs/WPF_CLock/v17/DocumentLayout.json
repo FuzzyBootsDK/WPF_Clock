@@ -58,8 +58,7 @@
               "RelativeToolTip": ".env",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-10-23T11:00:27.659Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-23T11:00:27.659Z"
             },
             {
               "$type": "Document",
@@ -69,7 +68,7 @@
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
               "ToolTip": "C:\\Users\\lassor\\source\\repos\\WPF_Clock\\MainWindow.xaml.cs",
               "RelativeToolTip": "MainWindow.xaml.cs",
-              "ViewState": "AgIAACYBAAAAAAAAAAAiwEEBAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAACYBAAAAAAAAAAAiwD0BAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-23T05:25:13.215Z",
               "EditorCaption": ""
@@ -83,8 +82,7 @@
               "ToolTip": "C:\\Users\\lassor\\source\\repos\\WPF_Clock\\MainWindow.xaml",
               "RelativeToolTip": "MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-10-23T07:41:36.144Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-23T07:41:36.144Z"
             },
             {
               "$type": "Document",
@@ -96,8 +94,7 @@
               "RelativeToolTip": "WeatherDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-23T06:01:03.94Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-23T06:01:03.94Z"
             },
             {
               "$type": "Document",
@@ -109,8 +106,7 @@
               "RelativeToolTip": "Location.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-23T05:44:41.451Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-23T05:44:41.451Z"
             }
           ]
         }
