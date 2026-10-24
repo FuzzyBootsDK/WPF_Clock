@@ -6,3 +6,10 @@
 
 # Visual Studio per-user cache: machine-specific, includes Copilot index databases.
 .vs/
+
+# JetBrains Rider per-user cache.
+.idea/
+
+# Build output.
+bin/
+obj/
