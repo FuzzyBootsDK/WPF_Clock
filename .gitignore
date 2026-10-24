@@ -3,3 +3,6 @@
 ################################################################################
 
 *.env
+
+# Visual Studio per-user cache: machine-specific, includes Copilot index databases.
+.vs/
