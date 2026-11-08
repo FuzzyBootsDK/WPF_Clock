@@ -31,7 +31,6 @@ public partial class MainWindow
     private bool _isMonthSpelledOut;
     private string _dateFormat = "dd-MM-yyyy";
     private string _timeFormat = "HH:mm:ss";
-    private string _amOrPm = string.Empty;
     private CultureInfo _currentCulture = new CultureInfo("da-DK");
 
     static MainWindow()
@@ -80,7 +79,9 @@ public partial class MainWindow
     /// </summary>
     private void UpdateTimeAndDate()
     {
-        TimeTextBox.Text = DateTime.Now.ToString(_timeFormat) + " " + _amOrPm;
+        // TrimEnd because a culture with no AM/PM designator (da-DK has none) renders "tt" as
+        // nothing, leaving the trailing space from the format string behind.
+        TimeTextBox.Text = DateTime.Now.ToString(_timeFormat, _currentCulture).TrimEnd();
         DateTextBox.Text = DateTime.Now.ToString(_dateFormat, _currentCulture);
         string dayOfWeek = DateTime.Now.ToString("dddd", _currentCulture);
         dayOfWeek = char.ToUpper(dayOfWeek[0]) + dayOfWeek.Substring(1);
@@ -112,16 +113,11 @@ public partial class MainWindow
     /// <returns>The time format string.</returns>
     private string ToggleTimeFormat()
     {
-        return _is24Hour ? "HH:mm:ss" : "hh:mm:ss";
-    }
-
-    /// <summary>
-    /// Determines whether to display AM or PM based on the current time.
-    /// </summary>
-    /// <returns>AM or PM string, or empty if 24-hour format.</returns>
-    private string DetermineAmOrPm()
-    {
-        return _is24Hour ? string.Empty : (DateTime.Now.Hour >= 12 ? "PM" : "AM");
+        // "tt" carries the designator, so it is evaluated on every render along with the rest of
+        // the time. It used to be a separate _amOrPm field, computed only when this menu was
+        // clicked -- so switching to 12-hour in the morning and leaving the window open showed
+        // "01:30:00 AM" at half past one in the afternoon, until the menu was touched again.
+        return _is24Hour ? "HH:mm:ss" : "hh:mm:ss tt";
     }
 
     /// <summary>
@@ -149,7 +145,6 @@ public partial class MainWindow
     {
         _is24Hour = !_is24Hour;
         _timeFormat = ToggleTimeFormat();
-        _amOrPm = DetermineAmOrPm();
     }
 
     /// <summary>
@@ -158,6 +153,17 @@ public partial class MainWindow
     private void switchCulture_Click(object sender, RoutedEventArgs e)
     {
         _currentCulture = _currentCulture.Name == "en-US" ? new CultureInfo("da-DK") : new CultureInfo("en-US");
+
+        // The field alone is not the application's culture: it is only consulted where it is
+        // passed explicitly. Anything formatted with a bare ToString() -- the weather values
+        // were -- reads CultureInfo.CurrentCulture instead, which comes from Windows regional
+        // settings and never changed when this toggled. On a Danish machine that meant en-US
+        // showed "7,16°C" next to a correctly Americanised date.
+        //
+        // Setting the thread's culture here is what makes the toggle mean something. Note this
+        // does not move the clock to a 12-hour format: _timeFormat is toggled separately on
+        // purpose, so 12/24-hour can be chosen independently of language.
+        CultureInfo.CurrentCulture = _currentCulture;
     }
 
     /// <summary>
@@ -176,8 +182,11 @@ public partial class MainWindow
 
         var humidityRoot = await MakeRequest(_humidity, _locationId);
 
+        // Culture passed explicitly at every call site, not left to the ambient CurrentCulture.
+        // switchCulture_Click now sets that too, so a bare ToString() would behave -- but saying
+        // which culture a number is formatted in is the part that stops this drifting again.
         string temp = tempRoot != null && tempRoot.Features.Count > 0
-            ? tempRoot.Features[0].Properties.Value.ToString() + "°C"
+            ? tempRoot.Features[0].Properties.Value.ToString(_currentCulture) + "°C"
             : "N/A";
 
         string windDirection = windDirectionRoot != null && windDirectionRoot.Features.Count > 0
@@ -185,17 +194,19 @@ public partial class MainWindow
             : "N/A";
 
         string windSpeed = windSpeedRoot != null && windSpeedRoot.Features.Count > 0
-            ? windSpeedRoot.Features[0].Properties.Value.ToString() + " m/s"
+            ? windSpeedRoot.Features[0].Properties.Value.ToString(_currentCulture) + " m/s"
             : "N/A";
 
         string humidity = humidityRoot != null && humidityRoot.Features.Count > 0
-            ? humidityRoot.Features[0].Properties.Value.ToString() + "%"
+            ? humidityRoot.Features[0].Properties.Value.ToString(_currentCulture) + "%"
             : "N/A";
 
         string totalWeather = $"Temperature: {temp}, Humidity: {humidity}\n Wind Direction: {windDirection}, Wind Speed: {windSpeed}";
 
         WeatherTextBox.Text = totalWeather;
-        LastApiCallTextBlock.Text = "Updated: " + DateTime.Now.ToString("HH:mm:ss");
+        // Same format and culture as the clock above it. Hard-coding "HH:mm:ss" here meant this
+        // stayed on a 24-hour clock while the main display was showing 12-hour with PM.
+        LastApiCallTextBlock.Text = "Updated: " + DateTime.Now.ToString(_timeFormat, _currentCulture).TrimEnd();
     }
 
     /// <summary>
