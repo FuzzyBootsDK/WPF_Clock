@@ -6,10 +6,10 @@ using System.Net.Http.Headers;
 using DotNetEnv;
 using Newtonsoft.Json;
 using System.Windows.Controls;
-using System.Linq; // Ensure this is included for LINQ operations
-using System.Diagnostics; // For debugging
+using System.Linq;
+using System.Diagnostics;
 using System.Collections.Generic;
-using System.Windows.Media; // For List
+using System.Windows.Media;
 
 namespace WPF_CLock;
 
@@ -18,8 +18,8 @@ namespace WPF_CLock;
 /// </summary>
 public partial class MainWindow
 {
-    private static readonly string BaseUrl = "https://dmigw.govcloud.dk/v2/metObs/collections/observation/items";
-    private static string ApiKey; //"8e67acbe-1cb2-48de-98d3-c6055fb527ef";
+    private static readonly string BaseUrl = "https://opendataapi.dmi.dk/v2/metObs/collections/observation/items";
+    private static string ApiKey;
     private string _locationId = "06030";
     private string _locationName = "Flyvestation Ålborg";
     private string _windDirection = "wind_dir";
@@ -31,11 +31,12 @@ public partial class MainWindow
     private bool _isMonthSpelledOut;
     private string _dateFormat = "dd-MM-yyyy";
     private string _timeFormat = "HH:mm:ss";
-    private string _amOrPm = String.Empty;
-    CultureInfo _currentCulture = new CultureInfo("da-DK");
+    private string _amOrPm = string.Empty;
+    private CultureInfo _currentCulture = new CultureInfo("da-DK");
 
     static MainWindow()
     {
+        // Load API key from .env file
         string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
         string envFilePath = System.IO.Path.Combine(appDirectory, ".env");
         Env.Load(envFilePath);
@@ -46,96 +47,122 @@ public partial class MainWindow
     {
         InitializeComponent();
         InitializeApiKey();
-        // Make an initial call to the API
         NameTextBlock.Text = _locationName;
 
-        DispatcherTimer timer = new DispatcherTimer();
-        timer.Interval = TimeSpan.FromSeconds(1);
+        // Set up a timer to update the time and date every second
+        DispatcherTimer timer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1)
+        };
         timer.Tick += (s, a) =>
         {
-            TimeTextBox.Text = DateTime.Now.ToString(_timeFormat) + " " + _amOrPm;
-            DateTextBox.Text = DateTime.Now.ToString(_dateFormat, _currentCulture);
-            string dayOfWeek = DateTime.Now.ToString("dddd", _currentCulture);
-            dayOfWeek = char.ToUpper(dayOfWeek[0]) + dayOfWeek.Substring(1);
-            DayTextBox.Text = dayOfWeek;
-            CultureTextBlock.Text = _currentCulture.Name;
+            UpdateTimeAndDate();
         };
         timer.Start();
 
+        // Initial weather update
         UpdateWeather();
         Task.Delay(30000);
 
-        DispatcherTimer apiTimer = new DispatcherTimer();
-        apiTimer.Interval = TimeSpan.FromMinutes(10);
+        // Set up a timer to update the weather every 10 minutes
+        DispatcherTimer apiTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMinutes(10)
+        };
         apiTimer.Tick += async (s, a) => { await UpdateWeather(); };
         apiTimer.Start();
 
         LoadLocationsIntoMenu(LocationMenuItem);
     }
 
-    private string ToggleEuropeanDateFormat()
+    /// <summary>
+    /// Updates the time and date displayed on the UI.
+    /// </summary>
+    private void UpdateTimeAndDate()
     {
-        return _isMonthSpelledOut ? "dd-MMMM-yyyy " : "dd-MM-yyyy";
+        TimeTextBox.Text = DateTime.Now.ToString(_timeFormat) + " " + _amOrPm;
+        DateTextBox.Text = DateTime.Now.ToString(_dateFormat, _currentCulture);
+        string dayOfWeek = DateTime.Now.ToString("dddd", _currentCulture);
+        dayOfWeek = char.ToUpper(dayOfWeek[0]) + dayOfWeek.Substring(1);
+        DayTextBox.Text = dayOfWeek;
+        CultureTextBlock.Text = _currentCulture.Name;
     }
 
+    /// <summary>
+    /// Toggles the European date format.
+    /// </summary>
+    /// <returns>The date format string.</returns>
+    private string ToggleEuropeanDateFormat()
+    {
+        return _isMonthSpelledOut ? "dd-MMMM-yyyy" : "dd-MM-yyyy";
+    }
+
+    /// <summary>
+    /// Toggles the American date format.
+    /// </summary>
+    /// <returns>The date format string.</returns>
     private string ToggleAmericanDateFormat()
     {
         return _isMonthSpelledOut ? "MMMM-dd-yyyy" : "MM-dd-yyyy";
     }
 
+    /// <summary>
+    /// Toggles the time format between 24-hour and 12-hour.
+    /// </summary>
+    /// <returns>The time format string.</returns>
     private string ToggleTimeFormat()
     {
         return _is24Hour ? "HH:mm:ss" : "hh:mm:ss";
     }
 
+    /// <summary>
+    /// Determines whether to display AM or PM based on the current time.
+    /// </summary>
+    /// <returns>AM or PM string, or empty if 24-hour format.</returns>
     private string DetermineAmOrPm()
     {
-        if (_is24Hour)
-        {
-            // In 24-hour format, there is no AM or PM. So return empty string.
-            return string.Empty;
-        }
-        else
-        {
-            // When in 12-hour format, decide AM or PM based on current time.
-            return DateTime.Now.Hour >= 12 ? "PM" : "AM";
-        }
+        return _is24Hour ? string.Empty : (DateTime.Now.Hour >= 12 ? "PM" : "AM");
     }
 
+    /// <summary>
+    /// Event handler for changing the date format.
+    /// </summary>
     private void changeDateFormat_Click(object sender, RoutedEventArgs e)
     {
-        _isEuropeanDateFormat = !_isEuropeanDateFormat; // Toggle the boolean value
+        _isEuropeanDateFormat = !_isEuropeanDateFormat;
         _dateFormat = _isEuropeanDateFormat ? ToggleEuropeanDateFormat() : ToggleAmericanDateFormat();
     }
 
+    /// <summary>
+    /// Event handler for changing the month format.
+    /// </summary>
     private void changeMonthFormat_Click(object sender, RoutedEventArgs e)
     {
-        _isMonthSpelledOut = !_isMonthSpelledOut; // Toggle the boolean value
+        _isMonthSpelledOut = !_isMonthSpelledOut;
         _dateFormat = _isEuropeanDateFormat ? ToggleEuropeanDateFormat() : ToggleAmericanDateFormat();
     }
 
+    /// <summary>
+    /// Event handler for changing the time format.
+    /// </summary>
     private void changeTimeFormat_Click(object sender, RoutedEventArgs e)
     {
-        _is24Hour = !_is24Hour; // Toggle the boolean value
+        _is24Hour = !_is24Hour;
         _timeFormat = ToggleTimeFormat();
-
         _amOrPm = DetermineAmOrPm();
     }
 
+    /// <summary>
+    /// Event handler for switching the culture between English and Danish.
+    /// </summary>
     private void switchCulture_Click(object sender, RoutedEventArgs e)
     {
-        //if the _currentCulture is not set or if it's set to English, switch to Danish.
-        //if it's Danish switch it back to English.
-        if (_currentCulture.Name == "en-US")
-        {
-            _currentCulture = new CultureInfo("da-DK");
-        }
-        else
-        {
-            _currentCulture = new CultureInfo("en-US");
-        }
+        _currentCulture = _currentCulture.Name == "en-US" ? new CultureInfo("da-DK") : new CultureInfo("en-US");
     }
 
+    /// <summary>
+    /// Updates the weather information displayed on the UI.
+    /// </summary>
     private async Task UpdateWeather()
     {
         var tempRoot = await MakeRequest(_temperature, _locationId);
@@ -165,36 +192,37 @@ public partial class MainWindow
             ? humidityRoot.Features[0].Properties.Value.ToString() + "%"
             : "N/A";
 
-        string totalWeather =
-            $"Temperature: {temp}, Humidity: {humidity}\n Wind Direction: {windDirection}, Wind Speed: {windSpeed}";
+        string totalWeather = $"Temperature: {temp}, Humidity: {humidity}\n Wind Direction: {windDirection}, Wind Speed: {windSpeed}";
 
         WeatherTextBox.Text = totalWeather;
-        // Update the LastApiCallTextBlock with the current time
         LastApiCallTextBlock.Text = "Updated: " + DateTime.Now.ToString("HH:mm:ss");
-        Debug.WriteLine(ApiKey);
-        // if (tempRoot != null && windDirectionRoot != null && humidityRoot != null)
-        // {
-        //     WeatherTextBox.Text = totalWeather;
-        // }
     }
 
+    /// <summary>
+    /// Constructs the URL for the API request.
+    /// </summary>
+    /// <param name="parameterId">The parameter ID.</param>
+    /// <param name="locationId">The location ID.</param>
+    /// <returns>The constructed URL.</returns>
     private static string ConstructUrl(string parameterId, string locationId)
     {
-        string callUrl =
-            $"?period=latest-day&stationId={locationId}&parameterId={parameterId}&limit=1&sortorder=observed%2CDESC&bbox-crs=https%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FOGC%2F1.3%2FCRS84&api-key=";
-        return $"{BaseUrl}{callUrl}{ApiKey}";
+        string callUrl = $"?period=latest-day&stationId={locationId}&parameterId={parameterId}&limit=1&sortorder=observed%2CDESC&bbox-crs=https%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FOGC%2F1.3%2FCRS84";
+        return $"{BaseUrl}{callUrl}";
     }
 
+    /// <summary>
+    /// Makes an API request to get weather data.
+    /// </summary>
+    /// <param name="parameterId">The parameter ID.</param>
+    /// <param name="locationId">The location ID.</param>
+    /// <returns>The feature collection from the API response.</returns>
     private static async Task<FeatureCollection?> MakeRequest(string parameterId, string locationId)
     {
         using (HttpClient client = new HttpClient())
         {
-            // Set request headers
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/geo+json"));
-            client.DefaultRequestHeaders.Add("X-Gravitee-Api-Key", ApiKey);
 
-            // Construct the URL
             string url = ConstructUrl(parameterId, locationId);
 
             try
@@ -204,24 +232,27 @@ public partial class MainWindow
                 if (response.IsSuccessStatusCode)
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
-                    FeatureCollection? root = JsonConvert.DeserializeObject<FeatureCollection>(responseBody);
-                    return root;
+                    return JsonConvert.DeserializeObject<FeatureCollection>(responseBody);
                 }
                 else
                 {
                     return null;
                 }
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
-                return null; // Optionally, you could log the exception here.
+                return null;
             }
         }
     }
 
+    /// <summary>
+    /// Converts a degree value to a cardinal direction.
+    /// </summary>
+    /// <param name="degree">The degree value.</param>
+    /// <returns>The cardinal direction.</returns>
     public string DegreeToCardinalDirection(double degree)
     {
-        // Ensure the degree is within the range [0, 360)
         degree = degree % 360;
         if (degree < 0)
         {
@@ -229,36 +260,47 @@ public partial class MainWindow
         }
 
         string[] cardinalDirections = { "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N" };
-        int index = (int)Math.Round(degree / 45) % 8; // Ensure the index is within the range [0, 7]
+        int index = (int)Math.Round(degree / 45) % 8;
         return cardinalDirections[index];
     }
 
+    /// <summary>
+    /// Event handler for when the location menu item is opened.
+    /// </summary>
     private void LocationMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
     {
         LoadLocationsIntoMenu(sender as MenuItem);
     }
 
+    /// <summary>
+    /// Loads locations into the menu.
+    /// </summary>
+    /// <param name="locationMenuItem">The location menu item.</param>
     private void LoadLocationsIntoMenu(MenuItem locationMenuItem)
     {
         if (locationMenuItem == null) return;
 
         var locations = LoadStationsFromDatabase();
-        Debug.WriteLine($"Found {locations.Count} locations in the database."); // Debug statement
-        locationMenuItem.Items.Clear(); // Clear existing items
+        Debug.WriteLine($"Found {locations.Count} locations in the database.");
+        locationMenuItem.Items.Clear();
 
         foreach (var location in locations)
         {
-            Debug.WriteLine($"Adding location: {location.name}"); // Debug statement
+            Debug.WriteLine($"Adding location: {location.name}");
             var locationSubMenuItem = new MenuItem
             {
                 Header = location.name,
-                Tag = location.stationId // Set the stationId as the Tag
+                Tag = location.stationId
             };
             locationSubMenuItem.Click += LocationMenuItem_Click;
             locationMenuItem.Items.Add(locationSubMenuItem);
         }
     }
 
+    /// <summary>
+    /// Loads stations from the database.
+    /// </summary>
+    /// <returns>A list of locations.</returns>
     private List<Location> LoadStationsFromDatabase()
     {
         using (var context = new WeatherDbContext())
@@ -267,24 +309,27 @@ public partial class MainWindow
         }
     }
 
+    /// <summary>
+    /// Event handler for when a location menu item is clicked.
+    /// </summary>
     private async void LocationMenuItem_Click(object sender, RoutedEventArgs e)
     {
         if (sender is MenuItem menuItem)
         {
-            _locationId = menuItem.Tag.ToString(); // Assign the stationId to locationId
-            _locationName = menuItem.Header.ToString(); // Assign the location name to locationName
-            Debug.WriteLine($"Selected locationId: {_locationId}"); // Debug statement
-            Debug.WriteLine($"Selected locationName: {_locationName}"); // Debug statement
-            Debug.WriteLine(ConstructUrl(_windDirection,_locationId));
+            _locationId = menuItem.Tag.ToString();
+            _locationName = menuItem.Header.ToString();
+            Debug.WriteLine($"Selected locationId: {_locationId}");
+            Debug.WriteLine($"Selected locationName: {_locationName}");
+            Debug.WriteLine(ConstructUrl(_windDirection, _locationId));
 
-            // Update the NameTextBlock with the new location name
             NameTextBlock.Text = _locationName;
-
-            // Call UpdateWeather() to fetch new weather data for the selected location
             await UpdateWeather();
         }
     }
 
+    /// <summary>
+    /// Event handler for when the API key menu item is clicked.
+    /// </summary>
     private void ApiKeyMenuItem_Click(object sender, RoutedEventArgs e)
     {
         var dialog = new ApiKeyDialog();
@@ -295,21 +340,26 @@ public partial class MainWindow
         }
     }
 
+    /// <summary>
+    /// Updates the static API key field.
+    /// </summary>
+    /// <param name="apiKey">The new API key.</param>
     private static void UpdateApiKey(string apiKey)
     {
-        // Use reflection to set the readonly field
         typeof(MainWindow).GetField("ApiKey", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic).SetValue(null, apiKey);
     }
 
+    /// <summary>
+    /// Saves the API key to the .env file and updates the UI.
+    /// </summary>
+    /// <param name="apiKey">The new API key.</param>
     private void SaveApiKey(string apiKey)
     {
         string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
         string envFilePath = System.IO.Path.Combine(appDirectory, ".env");
 
-        // Load existing .env file
         var envLines = System.IO.File.Exists(envFilePath) ? System.IO.File.ReadAllLines(envFilePath).ToList() : new List<string>();
 
-        // Update or add the APIKEY entry
         bool apiKeyFound = false;
         for (int i = 0; i < envLines.Count; i++)
         {
@@ -326,16 +376,14 @@ public partial class MainWindow
             envLines.Add($"APIKEY=\"{apiKey}\"");
         }
 
-        // Save the updated .env file
         System.IO.File.WriteAllLines(envFilePath, envLines);
-
-        // Update the static ApiKey field
         UpdateApiKey(apiKey);
-
-        // Re-initialize the API key to update the UI
         InitializeApiKey();
     }
 
+    /// <summary>
+    /// Initializes the API key and updates the UI accordingly.
+    /// </summary>
     private void InitializeApiKey()
     {
         string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
@@ -343,17 +391,7 @@ public partial class MainWindow
         Env.Load(envFilePath);
         ApiKey = Env.GetString("APIKEY");
 
-        Dispatcher.Invoke(() =>
-        {
-            if (string.IsNullOrEmpty(ApiKey))
-            {
-                _locationName = "API Key Missing";
-                NameTextBlock.Foreground = new SolidColorBrush(Colors.Red);
-            }
-            else
-            {
-                NameTextBlock.Foreground = new SolidColorBrush(Colors.White);
-            }
-        });
+        // DMI's open data API no longer requires a key, so a missing key is not an error.
+        Dispatcher.Invoke(() => NameTextBlock.Foreground = new SolidColorBrush(Colors.White));
     }
 }

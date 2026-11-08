@@ -10,13 +10,17 @@ using System.IO;
 
 namespace WPF_CLock
 {
-    public class WeatherDbContext: DbContext
+    public class WeatherDbContext : DbContext
     {
         public DbSet<Location> Locations { get; set; }
 
+        /// <summary>
+        /// Configures the database context options.
+        /// </summary>
+        /// <param name="optionsBuilder">The options builder.</param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // Load the .env file
+            // Load the .env file to get environment variables
             string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
             string envFilePath = System.IO.Path.Combine(appDirectory, ".env");
             Env.Load(envFilePath);
@@ -30,7 +34,7 @@ namespace WPF_CLock
                 dbPath = System.IO.Path.Combine(appDirectory, "Stations.db");
             }
 
-            // Log the database path for debugging
+            // Log the database path for debugging purposes
             Debug.WriteLine($"Database path: {dbPath}");
 
             // Check if the database file exists
@@ -43,11 +47,18 @@ namespace WPF_CLock
             optionsBuilder.UseSqlite($"Data Source={dbPath}");
         }
 
-
+        /// <summary>
+        /// Configures the model that is used by this context.
+        /// </summary>
+        /// <param name="modelBuilder">The model builder.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Map the Location entity to the "DMI Stations" table
             modelBuilder.Entity<Location>().ToTable("DMI Stations");
+
+            // Set the primary key for the Location entity
             modelBuilder.Entity<Location>().HasKey(l => l.stationId);
         }
     }
 }
+

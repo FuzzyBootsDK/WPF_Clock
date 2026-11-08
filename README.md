@@ -10,6 +10,8 @@ This is a WPF (Windows Presentation Foundation) application that displays the cu
 - Toggle between European (dd-MM-yyyy) and American (MM-dd-yyyy) date formats.
 - Toggle between numeric and spelled out month formats in the date.
 - Switch between English and Danish languages.
+- Load weather station locations from a SQLite database.
+- Update API key through a dialog.
 
 ## How to Use
 
@@ -23,14 +25,41 @@ The application has a menu with two main options: Format and Language.
 - Under the Language menu, there is one option:
   - Switch language / Skift sprog: This option allows you to switch between English and Danish languages.
 
+- Under the API Key menu, there is one option:
+  - Update API Key: This option allows you to update the API key used for fetching weather data.
+
 ## Code Structure
 
 The main code for the application is in the `MainWindow.xaml` and `MainWindow.xaml.cs` files. The `MainWindow.xaml` file contains the XAML markup for the user interface, and the `MainWindow.xaml.cs` file contains the C# code-behind for the application logic.
 
+### Main Files
+
+- `MainWindow.xaml`: Contains the XAML markup for the user interface.
+- `MainWindow.xaml.cs`: Contains the C# code-behind for the application logic.
+- `WeatherDbContext.cs`: Defines the database context for accessing weather station locations stored in a SQLite database.
+- `ApiKeyDialog.xaml.cs`: Defines the dialog for updating the API key.
+- `Geometry.cs`: Defines the data structures for handling weather data from the API.
+- `Location.cs`: Defines the `Location` entity used in the database.
+
 ## Requirements
 
-- .NET Framework 4.7.2 or later
+- .NET 8 or later
 - Windows operating system
+
+## Setup
+
+1. Ensure you have .NET 8 or later installed on your system.
+2. Clone the repository to your local machine.
+3. Open the solution in Visual Studio.
+4. Build the solution to restore the necessary NuGet packages.
+5. Run the application.
+
+## Environment Variables
+
+The application uses a `.env` file to store environment variables. The following variables are required:
+
+- `APIKEY`: The API key for accessing the weather data API.
+- `DB_PATH`: The path to the SQLite database file containing weather station locations.
 
 ## License
 

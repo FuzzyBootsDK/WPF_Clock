@@ -13,3 +13,6 @@
 # Build output.
 bin/
 obj/
+
+# dotnet publish output
+publish/
